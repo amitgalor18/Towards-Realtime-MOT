@@ -1,5 +1,5 @@
 {
-    "root":"/home/wangzd/datasets/MOT",
+    "root":"/mnt/c/Users/amitg/Documents/TAU/Thesis/datasets",
     "train":
     {
         "mot17":"./data/mot17.train",

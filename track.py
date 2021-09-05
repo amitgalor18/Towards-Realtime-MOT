@@ -86,7 +86,8 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
 
         # run tracking
         timer.tic()
-        blob = torch.from_numpy(img).cuda().unsqueeze(0)
+        # blob = torch.from_numpy(img).cuda().unsqueeze(0)
+        blob = torch.from_numpy(img).unsqueeze(0)
         online_targets = tracker.update(blob, img0)
         online_tlwhs = []
         online_ids = []
@@ -194,7 +195,7 @@ if __name__ == '__main__':
                       MOT17-11-SDP
                       MOT17-13-SDP
                     '''
-        data_root = '/home/wangzd/datasets/MOT/MOT17/images/train'
+        data_root = '/mnt/c/Users/amitg/Documents/TAU/Thesis/datasets/MOT/MOT17/images/train'
     else:
         seqs_str = '''MOT16-01
                      MOT16-03
@@ -203,7 +204,7 @@ if __name__ == '__main__':
                      MOT16-08
                      MOT16-12
                      MOT16-14'''
-        data_root = '/home/wangzd/datasets/MOT/MOT16/images/test'
+        data_root = '/mnt/c/Users/amitg/Documents/TAU/Thesis/datasets/MOT/MOT16/test'
     seqs = [seq.strip() for seq in seqs_str.split()]
 
     main(opt,

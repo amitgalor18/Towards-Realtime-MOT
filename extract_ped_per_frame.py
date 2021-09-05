@@ -36,7 +36,8 @@ def extract_ped_per_frame(
         load_darknet_weights(model, weights)
 
     model = torch.nn.DataParallel(model)
-    model.cuda().eval()
+    #model.cuda().eval()
+    model.eval()
 
     vlist = os.listdir(input_root)
     vlist = [osp.join(input_root, v, 'img1') for v in vlist]
@@ -50,7 +51,8 @@ def extract_ped_per_frame(
             frame_ground_id = frame_path.split('/')[-1].split('.')[0]
             if frame_id % 20 == 0:
                 print('Processing frame {} of video {}'.format(frame_id, frame_path))
-            blob = torch.from_numpy(frame).cuda().unsqueeze(0)
+            #blob = torch.from_numpy(frame).cuda().unsqueeze(0)
+            blob = torch.from_numpy(frame).unsqueeze(0)
             pred = model(blob)
             pred = pred[pred[:,:,4] > conf_thres]
             if len(pred) > 0:
@@ -77,8 +79,8 @@ if __name__ == '__main__':
     parser.add_argument('--nms-thres', type=float, default=0.3, help='iou threshold for non-maximum suppression')
     parser.add_argument('--img-size', type=int, default=(1088, 608), help='size of each image dimension')
     parser.add_argument('--print-interval', type=int, default=10, help='size of each image dimension')
-    parser.add_argument('--input-root', type=str, default='/home/wangzd/datasets/youtube/data/0004/frame', help='path to input frames')
-    parser.add_argument('--output-root', type=str, default='/home/wangzd/datasets/youtube/data/0004/ped_per_frame', help='path to output frames')
+    parser.add_argument('--input-root', type=str, default='frame', help='path to input frames')
+    parser.add_argument('--output-root', type=str, default='/mnt/c/amitg/Documents/TAU/Thesis/datasets/data/0004/ped_per_frame', help='path to output frames')
     opt = parser.parse_args()
     print(opt, end='\n\n')
 

@@ -1,0 +1,6 @@
+lap
+torch
+opencv-python
+torchvision
+numba
+cython-bbox

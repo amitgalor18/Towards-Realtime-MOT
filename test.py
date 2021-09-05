@@ -43,7 +43,8 @@ def test(
         load_darknet_weights(model, weights)
 
     model = torch.nn.DataParallel(model)
-    model.cuda().eval()
+    # model.cuda().eval()
+    model.eval()
 
     # Get dataloader
     transforms = T.Compose([T.ToTensor()])
@@ -58,7 +59,8 @@ def test(
     AP_accum, AP_accum_count = np.zeros(nC), np.zeros(nC)
     for batch_i, (imgs, targets, paths, shapes, targets_len) in enumerate(dataloader):
         t = time.time()
-        output = model(imgs.cuda())
+        # output = model(imgs.cuda())
+        output = model(imgs)
         output = non_max_suppression(output, conf_thres=conf_thres, nms_thres=nms_thres)
         for i, o in enumerate(output):
             if o is not None:
@@ -174,7 +176,8 @@ def test_emb(
         load_darknet_weights(model, weights)
 
     model = torch.nn.DataParallel(model)
-    model.cuda().eval()
+    # model.cuda().eval()
+    model.eval()
 
     # Get dataloader
     transforms = T.Compose([T.ToTensor()])
@@ -185,8 +188,8 @@ def test_emb(
     print('Extracting pedestrain features...')
     for batch_i, (imgs, targets, paths, shapes, targets_len) in enumerate(dataloader):
         t = time.time()
-        output = model(imgs.cuda(), targets.cuda(), targets_len.cuda()).squeeze()
-
+        # output = model(imgs.cuda(), targets.cuda(), targets_len.cuda()).squeeze()
+        output = model(imgs, targets, targets_len).squeeze()
         for out in output:
             feat, label = out[:-1], out[-1].long()
             if label != -1:
@@ -199,7 +202,8 @@ def test_emb(
     print('Computing pairwise similairity...')
     if len(embedding) <1 :
         return None
-    embedding = torch.stack(embedding, dim=0).cuda()
+    # embedding = torch.stack(embedding, dim=0).cuda()
+    embedding = torch.stack(embedding, dim=0)
     id_labels = torch.LongTensor(id_labels)
     n = len(id_labels)
     print(n, len(embedding))
