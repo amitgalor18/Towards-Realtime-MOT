@@ -186,15 +186,15 @@ if __name__ == '__main__':
     print(opt, end='\n\n')
  
     if not opt.test_mot16:
-        seqs_str = '''MOT17-02-SDP
-                      MOT17-04-SDP
-                      MOT17-05-SDP
-                      MOT17-09-SDP
-                      MOT17-10-SDP
-                      MOT17-11-SDP
-                      MOT17-13-SDP
+        seqs_str = '''MOT16-02
+                      MOT16-04
+                      MOT16-05
+                      MOT16-09
+                      MOT16-10
+                      MOT16-11
+                      MOT16-13
                     '''
-        data_root = '/home/wangzd/datasets/MOT/MOT17/images/train'
+        data_root = '/content/drive/MyDrive/MOT-TAU/Amit/dataset/MOT16/train'
     else:
         seqs_str = '''MOT16-01
                      MOT16-03
@@ -203,7 +203,7 @@ if __name__ == '__main__':
                      MOT16-08
                      MOT16-12
                      MOT16-14'''
-        data_root = '/home/wangzd/datasets/MOT/MOT16/images/test'
+        data_root = '/content/drive/MyDrive/MOT-TAU/Amit/dataset/MOT16/test'
     seqs = [seq.strip() for seq in seqs_str.split()]
 
     main(opt,
