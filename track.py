@@ -180,12 +180,16 @@ if __name__ == '__main__':
     parser.add_argument('--min-box-area', type=float, default=200, help='filter out tiny boxes')
     parser.add_argument('--track-buffer', type=int, default=30, help='tracking buffer')
     parser.add_argument('--test-mot16', action='store_true', help='tracking buffer')
+    parser.add_argument('--mot15', action='store_true', help='tracking buffer')
+    parser.add_argument('--mot17', action='store_true', help='tracking buffer')
+    parser.add_argument('--mot20', action='store_true', help='tracking buffer')
     parser.add_argument('--save-images', action='store_true', help='save tracking results (image)')
     parser.add_argument('--save-videos', action='store_true', help='save tracking results (video)')
     opt = parser.parse_args()
     print(opt, end='\n\n')
- 
-    if not opt.test_mot16:
+
+    # Added options for different datasets
+    if not (opt.test_mot16 or opt.mot15 or opt.mot17 or opt.mot20):
         seqs_str = '''MOT16-02
                       MOT16-04
                       MOT16-05
@@ -194,8 +198,53 @@ if __name__ == '__main__':
                       MOT16-11
                       MOT16-13
                     '''
-        data_root = '/content/drive/MyDrive/MOT-TAU/Amit/dataset/MOT16/train'
-    else:
+        data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT16/train'
+    if opt.mot15:
+        seqs_str = '''Venice-2
+                    KITTI-17
+                    KITTI-13
+                    ADL-Rundle-8
+                    ADL-Rundle-6
+                    ETH-Pedcross2
+                    ETH-Sunnyday
+                    ETH-Bahnhof
+                    PETS09-S2L1
+                    TUD-Campus
+                    TUD-Stadtmitte
+        '''
+        data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT15/train'
+    if opt.mot17:
+        seqs_str = '''MOT17-13-SDP
+                    MOT17-11-SDP
+                    MOT17-10-SDP
+                    MOT17-09-SDP
+                    MOT17-05-SDP
+                    MOT17-04-SDP
+                    MOT17-02-SDP
+                    MOT17-13-FRCNN
+                    MOT17-11-FRCNN
+                    MOT17-10-FRCNN
+                    MOT17-09-FRCNN
+                    MOT17-05-FRCNN
+                    MOT17-04-FRCNN
+                    MOT17-02-FRCNN
+                    MOT17-13-DPM
+                    MOT17-11-DPM
+                    MOT17-10-DPM
+                    MOT17-09-DPM
+                    MOT17-05-DPM
+                    MOT17-04-DPM
+                    MOT17-02-DPM
+        '''
+        data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT17/train'
+    if opt.mot15:
+        seqs_str = '''MOT20-05
+                    MOT20-03
+                    MOT20-02
+                    MOT20-01
+        '''
+        data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT20/train'
+    if opt.test_mot16:
         seqs_str = '''MOT16-01
                      MOT16-03
                      MOT16-06
