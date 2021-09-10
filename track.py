@@ -14,6 +14,7 @@ from utils.evaluation import Evaluator
 from utils.parse_config import parse_model_cfg
 import utils.datasets as datasets
 from utils.utils import *
+import datetime
 
 
 def write_results(filename, results, data_type):
@@ -116,7 +117,8 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
 def main(opt, data_root='/data/MOT16/train', det_root=None, seqs=('MOT16-05',), exp_name='demo', 
          save_images=False, save_videos=False, show_image=True):
     logger.setLevel(logging.INFO)
-    result_root = os.path.join(data_root, '..', 'results', exp_name)
+    today = str(datetime.date.today())
+    result_root = os.path.join(data_root, '..', 'results'+today, exp_name)
     mkdir_if_missing(result_root)
     data_type = 'mot'
 
