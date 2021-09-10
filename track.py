@@ -237,7 +237,7 @@ if __name__ == '__main__':
                     MOT17-02-DPM
         '''
         data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT17/train'
-    if opt.mot15:
+    if opt.mot20:
         seqs_str = '''MOT20-05
                     MOT20-03
                     MOT20-02
