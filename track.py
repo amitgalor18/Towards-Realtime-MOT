@@ -105,11 +105,14 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
             online_im = vis.plot_tracking(img0, online_tlwhs, online_ids, frame_id=frame_id,
                                           fps=1. / timer.average_time)
             # draw detections
-            online_im = vis.plot_detections(online_im,)
+            '''Detections is list of (x1, y1, x2, y2, object_conf, class_score, class_pred)'''
+            det_tlbrs = tracker.detections_stracks[:,0:3]
+            det_score = tracker.detections_stracks[:,5]
+            online_im_det = vis.plot_detections(online_im,det_tlbrs,det_score)
         if show_image:
-            cv2.imshow('online_im', online_im)
+            cv2.imshow('online_im', online_im_det)
         if save_dir is not None:
-            cv2.imwrite(os.path.join(save_dir, '{:05d}.jpg'.format(frame_id)), online_im)
+            cv2.imwrite(os.path.join(save_dir, '{:05d}.jpg'.format(frame_id)), online_im_det)
         frame_id += 1
     # save results
     write_results(result_filename, results, data_type)
@@ -133,7 +136,7 @@ def main(opt, data_root='/data/MOT16/train', det_root=None, seqs=('MOT16-05',), 
     n_frame = 0
     timer_avgs, timer_calls = [], []
     for seq in seqs:
-        output_dir = os.path.join(data_root, '..','outputs', exp_name, seq) if save_images or save_videos else None
+        output_dir = os.path.join(data_root, '..','outputs_with_detections', exp_name, seq) if save_images or save_videos else None
 
         logger.info('start seq: {}'.format(seq))
         dataloader = datasets.LoadImages(osp.join(data_root, seq, 'img1'), opt.img_size)
