@@ -109,8 +109,6 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
 
             print('detection[0]')
             print(tracker.detections_stracks[0])
-            print('detection[0][0]')
-            print(tracker.detections_stracks[0][0])
             det_tlbrs = tracker.detections_stracks[0:3]
             det_score = tracker.detections_stracks[5]
             online_im_det = vis.plot_detections(online_im,det_tlbrs,det_score)
