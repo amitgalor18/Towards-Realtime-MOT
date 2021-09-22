@@ -175,6 +175,8 @@ class JDETracker(object):
         self.max_time_lost = self.buffer_size
 
         self.kalman_filter = KalmanFilter()
+        self.detections_stracks= [] #list of detection objects for each frame
+
 
     def update(self, im_blob, img0):
         """

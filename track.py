@@ -104,6 +104,8 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
         if show_image or save_dir is not None:
             online_im = vis.plot_tracking(img0, online_tlwhs, online_ids, frame_id=frame_id,
                                           fps=1. / timer.average_time)
+            # draw detections
+            online_im = vis.plot_detections(online_im,)
         if show_image:
             cv2.imshow('online_im', online_im)
         if save_dir is not None:
