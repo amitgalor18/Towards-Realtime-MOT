@@ -71,8 +71,8 @@ def plot_detections(image, tlbrs, scores=None, color=(255, 0, 0), ids=None):
     thickness = 2 if text_scale > 1.3 else 1
     for i, det in enumerate(tlbrs):
         x1, y1, x2, y2 = np.asarray(det[:4], dtype=np.int)
-        x_center = x1 + (x2-x1)/2 #added calculation for center of bounding box
-        y_center = y1 + (y2-y1)/2
+        x_center = int(x1 + (x2-x1)/2) #added calculation for center of bounding box
+        y_center = int(y1 + (y2-y1)/2)
         if len(det) >= 7:
             label = 'det' if det[5] > 0 else 'trk'
             if ids is not None:
