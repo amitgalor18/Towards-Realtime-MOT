@@ -88,6 +88,6 @@ def plot_detections(image, tlbrs, scores=None, color=(255, 0, 0), ids=None):
                        # thickness=thickness)
 
         #cv2.rectangle(im, (x1, y1), (x2, y2), color, 2)
-        cv2.circle(im, (x_center, y_center), 2, (255, 0, 0), 3)
+        cv2.circle(im, (x_center, y_center), 3, (0, 0, 255), 3)
 
     return im
