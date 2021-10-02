@@ -97,7 +97,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         online_det_tlwhs = []
         online_ids = []
         online_det_ids = []
-        det_tlbrs = tracker.detections_stracks[0:3]
+        det_tlbrs = tracker.detections_stracks[0:4]
         det_tlwh = np.asarray(det_tlbrs).copy()
         det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
         print('det:',det_tlwh)
@@ -133,7 +133,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
             cv2.imwrite(os.path.join(save_dir, '{:05d}.jpg'.format(frame_id)), online_im_det)
         frame_id += 1
     # save results
-    write_results(result_filename, results, data_type)
+    # write_results(result_filename, results, data_type) #TODO: uncomment to restore regular results (tracker) outputs
 
     #save detections
     write_results(results_det_filename, results_det, data_type)
