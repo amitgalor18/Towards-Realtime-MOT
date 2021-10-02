@@ -103,7 +103,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         det_tlbrs = tracker.detections_stracks[0:4]
         det_tlwh = np.asarray(det_tlbrs).copy()
         det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
-        det_tlwhs = zip(*det_tlwh)
+        det_tlwhs = list(zip(det_tlwh))
         online_det_tlwhs.append(det_tlwhs)
         det_id = -1
         online_det_ids.append(det_id)
