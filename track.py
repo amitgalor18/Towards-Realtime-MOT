@@ -96,7 +96,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         online_det_ids = []
         for t in online_targets:
             tlwh = t.tlwh
-            det_tlwh = np.asarray(tracker.detections_stracks[0:3]).copy
+            det_tlwh = np.asarray(tracker.detections_stracks[0:3]).copy()
             det_tlwh[2:] -= det_tlwh[:2]    # tlbr to tlwh
             det_id = -1
             tid = t.track_id
