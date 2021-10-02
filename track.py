@@ -86,8 +86,10 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
     for path, img, img0 in dataloader:
         if frame_id % 20 == 0:
             logger.info('Processing frame {} ({:.2f} fps)'.format(frame_id, 1./max(1e-5, timer.average_time)))
-            print('results_det length: ')
-            print(np.shape(results_det))
+            print('results_det[i,:] example: ')
+            print(results_det[frame_id, :])
+            print('results[i,:] example: ')
+            print(results[frame_id, :])
 
         # run tracking
         timer.tic()
@@ -100,7 +102,6 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         det_tlbrs = tracker.detections_stracks[0:4]
         det_tlwh = np.asarray(det_tlbrs).copy()
         det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
-        print('det:',det_tlwh)
         online_det_tlwhs.append(det_tlwh)
         det_id = -1
         online_det_ids.append(det_id)
