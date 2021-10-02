@@ -94,18 +94,20 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         online_det_tlwhs = []
         online_ids = []
         online_det_ids = []
+        det_tlbrs = tracker.detections_stracks[0:3]
+        det_tlwh = np.asarray(det_tlbrs).copy()
+        det_tlwh[2:] = det_tlwh[2:] - det_tlwh[:2]  # tlbr to tlwh
+        online_det_tlwhs.append(det_tlwh)
+        det_id = -1
+        online_det_ids.append(det_id)
         for t in online_targets:
             tlwh = t.tlwh
-            det_tlwh = np.asarray(tracker.detections_stracks[0:3]).copy()
-            det_tlwh[2:] -= det_tlwh[:2]    # tlbr to tlwh
-            det_id = -1
+
             tid = t.track_id
             vertical = tlwh[2] / tlwh[3] > 1.6
             if tlwh[2] * tlwh[3] > opt.min_box_area and not vertical:
                 online_tlwhs.append(tlwh)
                 online_ids.append(tid)
-                online_det_tlwhs.append(det_tlwh)
-                online_det_ids.append(det_id)
         timer.toc()
         # save results
         results.append((frame_id + 1, online_tlwhs, online_ids))
@@ -116,7 +118,6 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
             # draw detections
             '''Detections is list of (x1, y1, x2, y2, object_conf, class_score, class_pred)'''
 
-            det_tlbrs = tracker.detections_stracks[0:3]
             if len(tracker.detections_stracks) > 5:
                 det_score = tracker.detections_stracks[5]
             else:
@@ -129,9 +130,9 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         frame_id += 1
     # save results
     write_results(result_filename, results, data_type)
-    write_results(results_det_filename, results_det, data_type)
-    #save detections
 
+    #save detections
+    write_results(results_det_filename, results_det, data_type)
 
     return frame_id, timer.average_time, timer.calls
 
