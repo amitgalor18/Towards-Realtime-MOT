@@ -4,6 +4,7 @@ import cv2
 import logging
 import argparse
 import motmetrics as mm
+import numpy as np
 
 import torch
 from tracker.multitracker import JDETracker
@@ -86,7 +87,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         if frame_id % 20 == 0:
             logger.info('Processing frame {} ({:.2f} fps)'.format(frame_id, 1./max(1e-5, timer.average_time)))
             print('results_det length: ')
-            print(len(results_det))
+            print(np.shape(results_det))
 
         # run tracking
         timer.tic()
@@ -98,7 +99,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         online_det_ids = []
         det_tlbrs = tracker.detections_stracks[0:3]
         det_tlwh = np.asarray(det_tlbrs).copy()
-        det_tlwh[2:3,:] = det_tlwh[2:3,:] - det_tlwh[0:1,:]  # tlbr to tlwh
+        det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
         print('det:',det_tlwh)
         online_det_tlwhs.append(det_tlwh)
         det_id = -1
