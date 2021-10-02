@@ -39,7 +39,7 @@ def write_results(filename, results, data_type):
     logger.info('save results to {}'.format(filename))
 
 
-def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_image=True, frame_rate=30):
+def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, save_dir=None, show_image=True, frame_rate=30):
     '''
        Processes the video sequence given and provides the output of tracking result (write the results in video file)
 
@@ -80,6 +80,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
     tracker = JDETracker(opt, frame_rate=frame_rate)
     timer = Timer()
     results = []
+    results_det = []
     frame_id = 0
     for path, img, img0 in dataloader:
         if frame_id % 20 == 0:
@@ -90,17 +91,25 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
         blob = torch.from_numpy(img).cuda().unsqueeze(0)
         online_targets = tracker.update(blob, img0)
         online_tlwhs = []
+        online_det_tlwhs = []
         online_ids = []
+        online_det_ids = []
         for t in online_targets:
             tlwh = t.tlwh
+            det_tlwh = np.asarray(tracker.detections_stracks[0:3]).copy
+            det_tlwh[2:] -= det_tlwh[:2]    # tlbr to tlwh
+            det_id = -1
             tid = t.track_id
             vertical = tlwh[2] / tlwh[3] > 1.6
             if tlwh[2] * tlwh[3] > opt.min_box_area and not vertical:
                 online_tlwhs.append(tlwh)
                 online_ids.append(tid)
+                online_det_tlwhs.append(det_tlwh)
+                online_det_ids.append(det_id)
         timer.toc()
         # save results
         results.append((frame_id + 1, online_tlwhs, online_ids))
+        results_det.append((frame_id + 1, online_det_tlwhs, online_det_ids))
         if show_image or save_dir is not None:
             online_im = vis.plot_tracking(img0, online_tlwhs, online_ids, frame_id=frame_id,
                                           fps=1. / timer.average_time)
@@ -120,6 +129,10 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
         frame_id += 1
     # save results
     write_results(result_filename, results, data_type)
+    write_results(results_det_filename, results_det, data_type)
+    #save detections
+
+
     return frame_id, timer.average_time, timer.calls
 
 
@@ -145,9 +158,10 @@ def main(opt, data_root='/data/MOT16/train', det_root=None, seqs=('MOT16-05',), 
         logger.info('start seq: {}'.format(seq))
         dataloader = datasets.LoadImages(osp.join(data_root, seq, 'img1'), opt.img_size)
         result_filename = os.path.join(result_root, '{}.txt'.format(seq))
+        results_det_filename = os.path.join(result_root, '{}_detections.txt'.format(seq))
         meta_info = open(os.path.join(data_root, seq, 'seqinfo.ini')).read() 
         frame_rate = int(meta_info[meta_info.find('frameRate')+10:meta_info.find('\nseqLength')])
-        nf, ta, tc = eval_seq(opt, dataloader, data_type, result_filename,
+        nf, ta, tc = eval_seq(opt, dataloader, data_type, result_filename, results_det_filename,
                               save_dir=output_dir, show_image=show_image, frame_rate=frame_rate)
         n_frame += nf
         timer_avgs.append(ta)
