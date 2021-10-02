@@ -105,6 +105,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         det_tlwh = np.asarray(det_tlbrs).copy()
         det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
         det_tlwh_df = pd.DataFrame(det_tlwh)
+        det_tlwh_df = det_tlwh_df.T
         det_tlwhs = det_tlwh_df.to_numpy()
         #det_tlwhs = np.array(zip(det_tlwh[0],det_tlwh[1],det_tlwh[2],det_tlwh[3]))
         online_det_tlwhs.append(det_tlwhs)
