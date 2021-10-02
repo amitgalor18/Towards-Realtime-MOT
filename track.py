@@ -109,8 +109,8 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         det_tlwhs = det_tlwh_df.to_numpy()
         #det_tlwhs = np.array(zip(det_tlwh[0],det_tlwh[1],det_tlwh[2],det_tlwh[3]))
         online_det_tlwhs.append(det_tlwhs)
-        det_id = np.arange(det_tlwh_df.shape[0])
-        online_det_ids.append(det_id)
+        # det_id = np.arange(det_tlwh_df.shape[0])
+
         for t in online_targets:
             tlwh = t.tlwh
 
@@ -122,6 +122,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         timer.toc()
         # save results
         results.append((frame_id + 1, online_tlwhs, online_ids))
+        online_det_ids=online_ids[:len(online_det_tlwhs)]
         results_det.append((frame_id + 1, online_det_tlwhs, online_det_ids))
         if show_image or save_dir is not None:
             online_im = vis.plot_tracking(img0, online_tlwhs, online_ids, frame_id=frame_id,
