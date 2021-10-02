@@ -109,7 +109,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         det_tlwhs = det_tlwh_df.to_numpy()
         #det_tlwhs = np.array(zip(det_tlwh[0],det_tlwh[1],det_tlwh[2],det_tlwh[3]))
         online_det_tlwhs.append(det_tlwhs)
-        det_id = range(det_tlwh_df.shape[0])
+        det_id = np.arange(det_tlwh_df.shape[0])
         online_det_ids.append(det_id)
         for t in online_targets:
             tlwh = t.tlwh
