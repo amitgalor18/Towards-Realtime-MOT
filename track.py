@@ -5,6 +5,7 @@ import logging
 import argparse
 import motmetrics as mm
 import numpy as np
+import pandas as pd
 
 import torch
 from tracker.multitracker import JDETracker
@@ -103,7 +104,9 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         det_tlbrs = tracker.detections_stracks[0:4]
         det_tlwh = np.asarray(det_tlbrs).copy()
         det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
-        det_tlwhs = np.array(zip(det_tlwh[0],det_tlwh[1],det_tlwh[2],det_tlwh[3]))
+        det_tlwh_df = pd.DataFrame(det_tlwh)
+        det_tlwhs = det_tlwh_df.to_numpy()
+        #det_tlwhs = np.array(zip(det_tlwh[0],det_tlwh[1],det_tlwh[2],det_tlwh[3]))
         online_det_tlwhs.append(det_tlwhs)
         det_id = -1
         online_det_ids.append(det_id)
