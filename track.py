@@ -85,6 +85,8 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
     for path, img, img0 in dataloader:
         if frame_id % 20 == 0:
             logger.info('Processing frame {} ({:.2f} fps)'.format(frame_id, 1./max(1e-5, timer.average_time)))
+            print('results_det length: ')
+            print(len(results_det))
 
         # run tracking
         timer.tic()
@@ -97,6 +99,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         det_tlbrs = tracker.detections_stracks[0:3]
         det_tlwh = np.asarray(det_tlbrs).copy()
         det_tlwh[2:3,:] = det_tlwh[2:3,:] - det_tlwh[0:1,:]  # tlbr to tlwh
+        print('det:',det_tlwh)
         online_det_tlwhs.append(det_tlwh)
         det_id = -1
         online_det_ids.append(det_id)
@@ -216,14 +219,15 @@ if __name__ == '__main__':
 
     # Added options for different datasets
     if not (opt.test_mot16 or opt.mot15 or opt.mot17 or opt.mot20):
-        seqs_str = '''MOT16-02
-                      MOT16-04
-                      MOT16-05
-                      MOT16-09
-                      MOT16-10
-                      MOT16-11
-                      MOT16-13
-                    '''
+        # seqs_str = '''MOT16-02
+        #               MOT16-04
+        #               MOT16-05
+        #               MOT16-09
+        #               MOT16-10
+        #               MOT16-11
+        #               MOT16-13
+        #             '''
+        seqs_str = '''MOT16-02'''  # temp for debugging. TODO: restore dataset to the full list
         data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT16/train'
     if opt.mot15:
         seqs_str = '''Venice-2
