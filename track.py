@@ -121,7 +121,9 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
         online_det_tlwhs = []
         online_ids = []
         online_det_ids = []
-        det_tlbrs = tracker.detections_stracks[0:4]
+        det_tlwhs = tracker.detections_stracks.tlwh
+        det_tlbrs = np.asarray(det_tlwhs).copy()
+        det_tlbrs[2:4,:] = det_tlbrs[0:2,:] + det_tlbrs[2:4,:] #tlwh to tlbr
         # det_tlwh = np.asarray(det_tlbrs).copy()
         # det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
         # det_tlwh_df = pd.DataFrame(det_tlwh)
@@ -162,7 +164,8 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
             '''Detections is list of (x1, y1, x2, y2, object_conf, class_score, class_pred)'''
 
             if len(tracker.detections_stracks) > 5:
-                det_score = tracker.detections_stracks[5]
+                # det_score = tracker.detections_stracks[5]
+                det_score = 1
             else:
                 det_score = None
             online_im_det = vis.plot_detections(online_im, det_tlbrs, det_score)

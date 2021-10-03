@@ -227,7 +227,7 @@ class JDETracker(object):
 
         t2 = time.time()
         # print('Forward: {} s'.format(t2-t1))
-        self.detections_stracks = dets  # add detections to object
+        self.detections_stracks = detections  # add detections to object
 
         ''' Add newly detected tracklets to tracked_stracks'''
         unconfirmed = []
