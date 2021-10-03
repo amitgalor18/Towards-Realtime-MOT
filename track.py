@@ -164,7 +164,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
 
             if len(tracker.detections_stracks) > 5:
                 # det_score = tracker.detections_stracks[5]
-                det_score = 1
+                det_score = np.ones(len(online_det_ids))
             else:
                 det_score = None
             online_im_det = vis.plot_detections(online_im, det_tlbrs, det_score)
