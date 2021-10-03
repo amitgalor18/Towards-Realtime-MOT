@@ -227,6 +227,7 @@ class JDETracker(object):
 
         t2 = time.time()
         # print('Forward: {} s'.format(t2-t1))
+        self.detections_stracks = detections  # add detections to object
 
         ''' Add newly detected tracklets to tracked_stracks'''
         unconfirmed = []
@@ -338,7 +339,6 @@ class JDETracker(object):
         self.lost_stracks = sub_stracks(self.lost_stracks, self.removed_stracks)
         self.removed_stracks.extend(removed_stracks)
         self.tracked_stracks, self.lost_stracks = remove_duplicate_stracks(self.tracked_stracks, self.lost_stracks)
-        self.detections_stracks=dets #add detections to object
         # get scores of lost tracks
         output_stracks = [track for track in self.tracked_stracks if track.is_activated]
         self.inactive_stracks = [track for track in self.tracked_stracks if not track.is_activated]

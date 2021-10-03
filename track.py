@@ -121,7 +121,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         online_det_tlwhs = []
         online_ids = []
         online_det_ids = []
-        # det_tlbrs = tracker.detections_stracks[0:4]
+        det_tlbrs = tracker.detections_stracks[0:4]
         # det_tlwh = np.asarray(det_tlbrs).copy()
         # det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
         # det_tlwh_df = pd.DataFrame(det_tlwh)
