@@ -121,9 +121,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
         online_det_tlwhs = []
         online_ids = []
         online_det_ids = []
-        det_tlwhs = tracker.detections_stracks.tlwh
-        det_tlbrs = np.asarray(det_tlwhs).copy()
-        det_tlbrs[2:4,:] = det_tlbrs[0:2,:] + det_tlbrs[2:4,:] #tlwh to tlbr
+
         # det_tlwh = np.asarray(det_tlbrs).copy()
         # det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
         # det_tlwh_df = pd.DataFrame(det_tlwh)
@@ -153,10 +151,11 @@ def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_im
                 detection_ids.append(-1)
         # save results
         results.append((frame_id + 1, online_tlwhs, online_ids))
-        # online_det_ids=online_ids[:len(online_det_tlwhs)]
-        # results_det.append((frame_id + 1, online_det_tlwhs, online_det_ids))
-        detection_results.append((frame_id + 1, detection_tlwhs, detection_ids))
 
+        detection_results.append((frame_id + 1, detection_tlwhs, detection_ids))
+        # convert tlwh to tlbr for visualization
+        det_tlbrs = np.asarray(detection_tlwhs).copy()
+        det_tlbrs[2:4,:] = det_tlbrs[0:2,:] + det_tlbrs[2:4,:] #tlwh to tlbr
         if show_image or save_dir is not None:
             online_im = vis.plot_tracking(img0, online_tlwhs, online_ids, frame_id=frame_id,
                                           fps=1. / timer.average_time)
