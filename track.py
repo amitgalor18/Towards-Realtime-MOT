@@ -61,7 +61,7 @@ def write_detection_results(filename, results, data_type):
     logger.info('save results to {}'.format(filename))
 
 
-def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, save_dir=None, show_image=True, frame_rate=30):
+def eval_seq(opt, dataloader, data_type, result_filename, save_dir=None, show_image=True, frame_rate=30):
     '''
        Processes the video sequence given and provides the output of tracking result (write the results in video file)
 
@@ -174,7 +174,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
     # save results
     write_results(result_filename, results, data_type)
     # save detections
-    write_detection_results(results_det_filename, detection_results, data_type)
+    write_detection_results(result_filename, detection_results, data_type)
 
     return frame_id, timer.average_time, timer.calls
 
@@ -201,10 +201,10 @@ def main(opt, data_root='/data/MOT16/train', det_root=None, seqs=('MOT16-05',), 
         logger.info('start seq: {}'.format(seq))
         dataloader = datasets.LoadImages(osp.join(data_root, seq, 'img1'), opt.img_size)
         result_filename = os.path.join(result_root, '{}.txt'.format(seq))
-        results_det_filename = os.path.join(result_root, '{}_detections.txt'.format(seq))
+        # results_det_filename = os.path.join(result_root, '{}_detections.txt'.format(seq))
         meta_info = open(os.path.join(data_root, seq, 'seqinfo.ini')).read() 
         frame_rate = int(meta_info[meta_info.find('frameRate')+10:meta_info.find('\nseqLength')])
-        nf, ta, tc = eval_seq(opt, dataloader, data_type, result_filename, results_det_filename,
+        nf, ta, tc = eval_seq(opt, dataloader, data_type, result_filename,
                               save_dir=output_dir, show_image=show_image, frame_rate=frame_rate)
         n_frame += nf
         timer_avgs.append(ta)
@@ -258,15 +258,15 @@ if __name__ == '__main__':
 
     # Added options for different datasets
     if not (opt.test_mot16 or opt.mot15 or opt.mot17 or opt.mot20):
-        # seqs_str = '''MOT16-02
-        #               MOT16-04
-        #               MOT16-05
-        #               MOT16-09
-        #               MOT16-10
-        #               MOT16-11
-        #               MOT16-13
-        #             '''
-        seqs_str = '''MOT16-02'''  # temp for debugging. TODO: restore dataset to the full list
+        seqs_str = '''MOT16-02
+                      MOT16-04
+                      MOT16-05
+                      MOT16-09
+                      MOT16-10
+                      MOT16-11
+                      MOT16-13
+                    '''
+        # seqs_str = '''MOT16-02'''  # temp for debugging. TODO: restore dataset to the full list
         data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT16/train'
     if opt.mot15:
         seqs_str = '''Venice-2
