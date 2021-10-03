@@ -40,6 +40,26 @@ def write_results(filename, results, data_type):
                 f.write(line)
     logger.info('save results to {}'.format(filename))
 
+def write_detection_results(filename, results, data_type):
+
+    filename = filename.replace(".txt", "_det.txt")
+
+    if data_type == 'mot':
+        save_format = '{frame},{id},{x1},{y1},{w},{h},1,-1,-1,-1\n'
+    elif data_type == 'kitti':
+        save_format = '{frame} {id} pedestrian 0 0 -10 {x1} {y1} {x2} {y2} -10 -10 -10 -1000 -1000 -1000 -10\n'
+    else:
+        raise ValueError(data_type)
+
+    with open(filename, 'w') as f:
+        for frame_id, tlwhs, track_ids in results:
+            for tlwh, track_id in zip(tlwhs, track_ids):
+                x1, y1, w, h = tlwh
+                x2, y2 = x1 + w, y1 + h
+                line = save_format.format(frame=frame_id, id=-1, x1=x1, y1=y1, x2=x2, y2=y2, w=w, h=h)
+                f.write(line)
+    logger.info('save results to {}'.format(filename))
+
 
 def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, save_dir=None, show_image=True, frame_rate=30):
     '''
@@ -82,16 +102,16 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
     tracker = JDETracker(opt, frame_rate=frame_rate)
     timer = Timer()
     results = []
-    results_det = []
+    detection_results = []
     frame_id = 0
     for path, img, img0 in dataloader:
         if frame_id % 20 == 0:
             logger.info('Processing frame {} ({:.2f} fps)'.format(frame_id, 1./max(1e-5, timer.average_time)))
             if frame_id != 0:
-                print('results_det[i,:] example: ')
-                print(results_det[frame_id-1][:][:])
-                print('results[i,:] example: ')
-                print(results[frame_id-1][:][:])
+                # print('results_det[i,:] example: ')
+                # print(results_det[frame_id-1][:][:])
+                # print('results[i,:] example: ')
+                # print(results[frame_id-1][:][:])
 
         # run tracking
         timer.tic()
@@ -101,14 +121,14 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
         online_det_tlwhs = []
         online_ids = []
         online_det_ids = []
-        det_tlbrs = tracker.detections_stracks[0:4]
-        det_tlwh = np.asarray(det_tlbrs).copy()
-        det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
-        det_tlwh_df = pd.DataFrame(det_tlwh)
-        det_tlwh_df = det_tlwh_df.T
-        det_tlwhs = det_tlwh_df.to_numpy()
-        #det_tlwhs = np.array(zip(det_tlwh[0],det_tlwh[1],det_tlwh[2],det_tlwh[3]))
-        online_det_tlwhs.append(det_tlwhs)
+        # det_tlbrs = tracker.detections_stracks[0:4]
+        # det_tlwh = np.asarray(det_tlbrs).copy()
+        # det_tlwh[2:4,:] = det_tlwh[2:4,:] - det_tlwh[0:2,:]  # tlbr to tlwh
+        # det_tlwh_df = pd.DataFrame(det_tlwh)
+        # det_tlwh_df = det_tlwh_df.T
+        # det_tlwhs = det_tlwh_df.to_numpy()
+        # det_tlwhs = np.array(zip(det_tlwh[0],det_tlwh[1],det_tlwh[2],det_tlwh[3]))
+        # online_det_tlwhs.append(det_tlwhs)
         # det_id = np.arange(det_tlwh_df.shape[0])
 
         for t in online_targets:
@@ -120,10 +140,21 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
                 online_tlwhs.append(tlwh)
                 online_ids.append(tid)
         timer.toc()
+
+        detection_tlwhs = []
+        detection_ids = []
+        for d in tracker.detections_stracks:
+            tlwh = d.tlwh
+            vertical = tlwh[2] / tlwh[3] > 1.6
+            if tlwh[2] * tlwh[3] > opt.min_box_area and not vertical:
+                detection_tlwhs.append(tlwh)
+                detection_ids.append(-1)
         # save results
         results.append((frame_id + 1, online_tlwhs, online_ids))
-        online_det_ids=online_ids[:len(online_det_tlwhs)]
-        results_det.append((frame_id + 1, online_det_tlwhs, online_det_ids))
+        # online_det_ids=online_ids[:len(online_det_tlwhs)]
+        # results_det.append((frame_id + 1, online_det_tlwhs, online_det_ids))
+        detection_results.append((frame_id + 1, detection_tlwhs, detection_ids))
+
         if show_image or save_dir is not None:
             online_im = vis.plot_tracking(img0, online_tlwhs, online_ids, frame_id=frame_id,
                                           fps=1. / timer.average_time)
@@ -141,10 +172,9 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
             cv2.imwrite(os.path.join(save_dir, '{:05d}.jpg'.format(frame_id)), online_im_det)
         frame_id += 1
     # save results
-    # write_results(result_filename, results, data_type) #TODO: uncomment to restore regular results (tracker) outputs
-
-    #save detections
-    write_results(results_det_filename, results_det, data_type)
+    write_results(result_filename, results, data_type)
+    # save detections
+    write_detection_results(results_det_filename, detection_results, data_type)
 
     return frame_id, timer.average_time, timer.calls
 
