@@ -82,8 +82,8 @@ def plot_detections(image, tlbrs, scores=None, color=(255, 0, 0), ids=None):
             else:
                 text = '{}# {:.2f}'.format(label, det[6])
 
-        if scores is not None:
-            text = '{:.2f}'.format(scores[i])
+        # if scores is not None:
+        #     text = '{:.2f}'.format(scores[i])
             #cv2.putText(im, text, (x1, y1 + 30), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 255, 255),
                        # thickness=thickness)
 
