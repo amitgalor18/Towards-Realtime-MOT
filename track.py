@@ -107,7 +107,7 @@ def eval_seq(opt, dataloader, data_type, result_filename, results_det_filename, 
     for path, img, img0 in dataloader:
         if frame_id % 20 == 0:
             logger.info('Processing frame {} ({:.2f} fps)'.format(frame_id, 1./max(1e-5, timer.average_time)))
-            if frame_id != 0:
+            #if frame_id != 0:
                 # print('results_det[i,:] example: ')
                 # print(results_det[frame_id-1][:][:])
                 # print('results[i,:] example: ')
