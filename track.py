@@ -185,6 +185,7 @@ if __name__ == '__main__':
     parser.add_argument('--mot15', action='store_true', help='tracking buffer')
     parser.add_argument('--mot17', action='store_true', help='tracking buffer')
     parser.add_argument('--mot20', action='store_true', help='tracking buffer')
+    parser.add_argument('--sample', action='store_true', help='tracking buffer')
     parser.add_argument('--save-images', action='store_true', help='save tracking results (image)')
     parser.add_argument('--save-videos', action='store_true', help='save tracking results (video)')
     opt = parser.parse_args()
@@ -244,6 +245,10 @@ if __name__ == '__main__':
                     MOT20-03
                     MOT20-02
                     MOT20-01
+        '''
+        data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT20/train'
+    if opt.sample:
+        seqs_str = '''MOT20-03
         '''
         data_root = '/content/drive/MyDrive/MOT-TAU/DATASET/MOT20/train'
     if opt.test_mot16:
